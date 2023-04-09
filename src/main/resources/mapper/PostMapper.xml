@@ -27,7 +27,9 @@
         from posts
         where  post_id = #{postId,jdbcType=INTEGER} 
     </select>
-
+    <select id="selectByCategoryId" resultMap="BaseResultMap">
+    SELECT * FROM posts WHERE category_id = #{categoryId}
+</select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from posts
         where  post_id = #{postId,jdbcType=INTEGER} 

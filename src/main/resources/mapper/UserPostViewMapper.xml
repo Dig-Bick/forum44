@@ -1,75 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.example.forum4.mapper.UserPostViewMapper">
 
-    <resultMap id="BaseResultMap" type="com.example.forum4.entity.UserPostView">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="userId" column="user_id" jdbcType="INTEGER"/>
-            <result property="postId" column="post_id" jdbcType="INTEGER"/>
-            <result property="viewTime" column="view_time" jdbcType="TIMESTAMP"/>
+    <resultMap id="UserPostViewResultMap" type="com.example.forum4.entity.UserPostView">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="post_id" property="postId"/>
+        <result column="viewed_at" property="viewTime"/>
+        <association property="post" resultMap="com.example.forum4.mapper.PostMapper.BaseResultMap" />
+
     </resultMap>
 
-    <sql id="Base_Column_List">
-        id,user_id,post_id,
-        view_time
-    </sql>
-
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List" />
-        from user_post_views
-        where  id = #{id,jdbcType=BIGINT} 
-    </select>
-
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete from user_post_views
-        where  id = #{id,jdbcType=BIGINT} 
-    </delete>
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.example.forum4.entity.UserPostView" useGeneratedKeys="true">
-        insert into user_post_views
-        ( id,user_id,post_id
-        ,view_time)
-        values (#{id,jdbcType=BIGINT},#{userId,jdbcType=INTEGER},#{postId,jdbcType=INTEGER}
-        ,#{viewTime,jdbcType=TIMESTAMP})
+    <insert id="insert" parameterType="com.example.forum4.entity.UserPostView">
+        INSERT INTO user_post_views (user_id, post_id)
+        VALUES (#{userId}, #{postId})
     </insert>
-    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.example.forum4.entity.UserPostView" useGeneratedKeys="true">
-        insert into user_post_views
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-                <if test="id != null">id,</if>
-                <if test="userId != null">user_id,</if>
-                <if test="postId != null">post_id,</if>
-                <if test="viewTime != null">view_time,</if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-                <if test="id != null">#{id,jdbcType=BIGINT},</if>
-                <if test="userId != null">#{userId,jdbcType=INTEGER},</if>
-                <if test="postId != null">#{postId,jdbcType=INTEGER},</if>
-                <if test="viewTime != null">#{viewTime,jdbcType=TIMESTAMP},</if>
-        </trim>
-    </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.example.forum4.entity.UserPostView">
-        update user_post_views
-        <set>
-                <if test="userId != null">
-                    user_id = #{userId,jdbcType=INTEGER},
-                </if>
-                <if test="postId != null">
-                    post_id = #{postId,jdbcType=INTEGER},
-                </if>
-                <if test="viewTime != null">
-                    view_time = #{viewTime,jdbcType=TIMESTAMP},
-                </if>
-        </set>
-        where   id = #{id,jdbcType=BIGINT} 
-    </update>
-    <update id="updateByPrimaryKey" parameterType="com.example.forum4.entity.UserPostView">
-        update user_post_views
-        set 
-            user_id =  #{userId,jdbcType=INTEGER},
-            post_id =  #{postId,jdbcType=INTEGER},
-            view_time =  #{viewTime,jdbcType=TIMESTAMP}
-        where   id = #{id,jdbcType=BIGINT} 
-    </update>
+
+    <select id="selectByUserId" resultMap="UserPostViewResultMap">
+    SELECT
+        upv.*,
+        p.*
+    FROM
+        user_post_views upv
+    INNER JOIN
+        posts p ON upv.post_id = p.post_id
+    WHERE
+        upv.user_id = #{userId}
+</select>
+
 </mapper>

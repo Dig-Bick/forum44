@@ -5,30 +5,31 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 
+ *
  * @TableName user_post_views
  */
 @Data
 public class UserPostView implements Serializable {
     /**
-     * 
+     *
      */
     private Long id;
 
     /**
-     * 
+     *
      */
     private Integer userId;
 
     /**
-     * 
+     *
      */
     private Integer postId;
 
     /**
-     * 
+     *
      */
     private Date viewTime;
+    private Post post;
 
     private static final long serialVersionUID = 1L;
 

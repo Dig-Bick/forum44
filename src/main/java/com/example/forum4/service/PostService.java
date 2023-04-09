@@ -21,6 +21,9 @@ public class PostService {
         // 这里仅返回最新的10篇帖子作为示例
         return postMapper.findAll().stream().limit(10).collect(Collectors.toList());
     }
+    public List<Post> getPostsByCategoryId(Long categoryId) {
+    return postMapper.selectByCategoryId(categoryId);
+}
 
     // Other CRUD operations...
 }

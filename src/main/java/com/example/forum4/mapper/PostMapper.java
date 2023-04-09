@@ -29,4 +29,6 @@ public interface PostMapper {
     @Select("SELECT * FROM posts")
     List<Post> findAll();
 
+    List<Post> selectByCategoryId(Long categoryId);
+
 }
