@@ -21,11 +21,11 @@ public class PostController {
 
     @GetMapping
     public List<Post> findAll() {
-        return postService.findAll();
+        return postService.findAll();//Cannot resolve method 'findAll' in 'PostService'
     }
     @GetMapping("/recommend")
     public ResponseEntity<List<Post>> getRecommendedPosts(@RequestParam("userId") int userId) {
-        List<Post> recommendedPosts = postService.getRecommendedPosts(userId);
+        List<Post> recommendedPosts = postService.getRecommendedPosts(userId);//Cannot resolve method 'getRecommendedPosts' in 'PostService'
         return ResponseEntity.ok(recommendedPosts);
     }
 
@@ -39,7 +39,7 @@ public class PostController {
             Integer categoryId = view.getPost().getCategoryId();
             // 将 Integer 类型的 categoryId 转换为 Long 类型
             Long longCategoryId = categoryId != null ? categoryId.longValue() : null;
-            recommendedPosts.addAll(postService.getPostsByCategoryId(longCategoryId));
+            recommendedPosts.addAll(postService.getPostsByCategoryId(longCategoryId));//Cannot resolve method 'getPostsByCategoryId' in 'PostService'
         }
         return recommendedPosts;
     }

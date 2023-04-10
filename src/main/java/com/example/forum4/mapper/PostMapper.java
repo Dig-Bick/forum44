@@ -1,5 +1,6 @@
 package com.example.forum4.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.forum4.entity.Post;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -13,7 +14,7 @@ import java.util.List;
 * @Entity com.example.forum4.entity.Post
 */
 @Mapper
-public interface PostMapper {
+public interface PostMapper extends BaseMapper<Post> {
 
     int deleteByPrimaryKey(Long id);
 
