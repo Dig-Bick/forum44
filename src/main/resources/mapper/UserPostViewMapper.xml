@@ -9,7 +9,7 @@
         <result column="user_id" property="userId"/>
         <result column="post_id" property="postId"/>
         <result column="viewed_at" property="viewTime"/>
-        <association property="post" resultMap="com.example.forum4.mapper.PostMapper.BaseResultMap" />
+        <association property="post" javaType="com.example.forum4.entity.Post" resultMap="com.example.forum4.mapper.PostMapper.BaseResultMap" />
 
     </resultMap>
 
