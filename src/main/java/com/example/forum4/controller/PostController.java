@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/postManagement")
+@RequestMapping("/api/posts")
 public class PostController {
     @Autowired
     private PostService postService;
     @Autowired
     private UserPostViewService userPostViewService;
 
-    @GetMapping
+    @GetMapping("/all")
     public List<Post> findAll() {
         return postService.findAll();//Cannot resolve method 'findAll' in 'PostService'
     }
