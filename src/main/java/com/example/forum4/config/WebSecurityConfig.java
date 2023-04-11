@@ -16,7 +16,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
             .csrf().disable() // 禁用 CSRF 防护
             .authorizeRequests()
-                .antMatchers("/api/register", "/api/login", "/admin/register", "/admin/login", "/admin/user-management", "/user/list", "/user/delete/{id}","/api/posts","/api/categories","/api/postManagement/posts/","/api/postManagement/posts").permitAll() // 允许未经身份验证的用户访问相关路径
+                .antMatchers("/api/register", "/api/login", "/admin/register", "/admin/login", "/admin/user-management", "/user/list", "/user/delete/{id}","/api/posts","/api/categories","/api/postManagement/posts/","/api/postManagement/posts/").permitAll() // 允许未经身份验证的用户访问相关路径
                 .anyRequest().authenticated()
                 .and()
             .httpBasic() // 使用基本的 HTTP 身份验证
