@@ -21,27 +21,29 @@ public class PostController {
 
     @GetMapping("/all")
     public List<Post> findAll() {
-        return postService.findAll();//Cannot resolve method 'findAll' in 'PostService'
-    }
-    @GetMapping("/recommend")
-    public ResponseEntity<List<Post>> getRecommendedPosts(@RequestParam("userId") int userId) {
-        List<Post> recommendedPosts = postService.getRecommendedPosts(userId);//Cannot resolve method 'getRecommendedPosts' in 'PostService'
-        return ResponseEntity.ok(recommendedPosts);
+        return postService.findAll();
     }
 
-    @GetMapping("/recommended/{userId}")
-    public List<Post> getRecommendedPosts(@PathVariable Long userId) {
+    @GetMapping("/recommend")
+    public ResponseEntity<List<Post>> getRecommendedPosts(@RequestParam("userId") int userId) {
         // 获取用户浏览过的帖子
-        List<UserPostView> views = userPostViewService.getViewsByUserId(userId);
+        List<UserPostView> views = userPostViewService.getViewsByUserId((long) userId);
+
         // 根据浏览过的帖子获取推荐帖子，这里只是一个简单示例，您可以根据实际需求进行修改
         List<Post> recommendedPosts = new ArrayList<>();
-        for (UserPostView view : views) {
-            Integer categoryId = view.getPost().getCategoryId();
-            // 将 Integer 类型的 categoryId 转换为 Long 类型
-            Long longCategoryId = categoryId != null ? categoryId.longValue() : null;
-            recommendedPosts.addAll(postService.getPostsByCategoryId(longCategoryId));//Cannot resolve method 'getPostsByCategoryId' in 'PostService'
+
+        if (views.isEmpty()) {
+            // 如果用户没有浏览过任何帖子，则返回随机推荐的帖子
+            return ResponseEntity.ok(postService.getRandomPosts(1)); // 返回 1 个随机推荐的帖子
+        } else {
+            for (UserPostView view : views) {
+                Integer categoryId = view.getPost().getCategoryId();
+                // 将 Integer 类型的 categoryId 转换为 Long 类型
+                Long longCategoryId = categoryId != null ? categoryId.longValue() : null;
+                recommendedPosts.addAll(postService.getPostsByCategoryId(longCategoryId));
+            }
         }
-        return recommendedPosts;
+        return ResponseEntity.ok(recommendedPosts);
     }
 
     // Other CRUD operations...

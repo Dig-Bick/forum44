@@ -13,4 +13,5 @@ public interface PostService {
     IPage<Post> page(Page<Post> page,Long categoryId);
     boolean updateById(Post post);
     boolean removeById(Integer postId);
+    List<Post> getRandomPosts(int count);
 }

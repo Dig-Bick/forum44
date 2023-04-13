@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -55,5 +57,11 @@ public class PostServiceImpl implements PostService {
     @Override
     public boolean removeById(Integer postId) {
         return postMapper.deleteById(postId) > 0;
+    }
+     @Override
+    public List<Post> getRandomPosts(int count) {
+        List<Post> allPosts = findAll();
+        Collections.shuffle(allPosts);
+        return allPosts.stream().limit(count).collect(Collectors.toList());
     }
 }
