@@ -24,10 +24,10 @@ public class PostController {
         return postService.findAll();
     }
 
-    @GetMapping("/recommend")
-    public ResponseEntity<List<Post>> getRecommendedPosts(@RequestParam("userId") int userId) {
+    @GetMapping("/recommended")
+    public ResponseEntity<List<Post>> getRecommendedPosts(@RequestParam("userId") Long userId) {
         // 获取用户浏览过的帖子
-        List<UserPostView> views = userPostViewService.getViewsByUserId((long) userId);
+        List<UserPostView> views = userPostViewService.getViewsByUserId(userId);
 
         // 根据浏览过的帖子获取推荐帖子，这里只是一个简单示例，您可以根据实际需求进行修改
         List<Post> recommendedPosts = new ArrayList<>();
