@@ -2,51 +2,57 @@ package com.example.forum4.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
- * 
+ *
  * @TableName posts
  */
 @Data
+@TableName("posts")
 public class Post implements Serializable {
     /**
-     * 
+     *
      */
+    @TableId(value = "post_id", type = IdType.AUTO)
     private Integer postId;
 
     /**
-     * 
+     *
      */
     private Integer userId;
 
     /**
-     * 
+     *
      */
     private String title;
 
     /**
-     * 
+     *
      */
     private String content;
 
     /**
-     * 
+     *
      */
     private Integer categoryId;
 
     /**
-     * 
+     *
      */
     private Date createdAt;
 
     /**
-     * 
+     *
      */
     private Date updatedAt;
 
     /**
-     * 
+     *
      */
     private Integer viewCount;
 
