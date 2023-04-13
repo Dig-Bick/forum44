@@ -13,8 +13,6 @@
             <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
             <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
             <result property="viewCount" column="view_count" jdbcType="INTEGER"/>
-
-
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -27,15 +25,18 @@
         select
         <include refid="Base_Column_List" />
         from posts
-        where  post_id = #{postId,jdbcType=INTEGER} 
+        where  post_id = #{postId,jdbcType=INTEGER}
     </select>
+
     <select id="selectByCategoryId" resultMap="BaseResultMap">
-    SELECT * FROM posts WHERE category_id = #{categoryId}
-</select>
+        SELECT * FROM posts WHERE category_id = #{categoryId}
+    </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from posts
-        where  post_id = #{postId,jdbcType=INTEGER} 
+        where  post_id = #{postId,jdbcType=INTEGER}
     </delete>
+
     <insert id="insert" keyColumn="post_id" keyProperty="postId" parameterType="com.example.forum4.entity.Post" useGeneratedKeys="true">
         insert into posts
         ( post_id,user_id,title
@@ -45,6 +46,7 @@
         ,#{content,jdbcType=VARCHAR},#{categoryId,jdbcType=INTEGER},#{createdAt,jdbcType=TIMESTAMP}
         ,#{updatedAt,jdbcType=TIMESTAMP},#{viewCount,jdbcType=INTEGER})
     </insert>
+
     <insert id="insertSelective" keyColumn="post_id" keyProperty="postId" parameterType="com.example.forum4.entity.Post" useGeneratedKeys="true">
         insert into posts
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -57,7 +59,7 @@
                 <if test="updatedAt != null">updated_at,</if>
                 <if test="viewCount != null">view_count,</if>
         </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <trim prefix="values (" suffix=")" suffixOverrides=",">
                 <if test="postId != null">#{postId,jdbcType=INTEGER},</if>
                 <if test="userId != null">#{userId,jdbcType=INTEGER},</if>
                 <if test="title != null">#{title,jdbcType=VARCHAR},</if>
@@ -68,6 +70,7 @@
                 <if test="viewCount != null">#{viewCount,jdbcType=INTEGER},</if>
         </trim>
     </insert>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.example.forum4.entity.Post">
         update posts
         <set>
@@ -93,11 +96,12 @@
                     view_count = #{viewCount,jdbcType=INTEGER},
                 </if>
         </set>
-        where   post_id = #{postId,jdbcType=INTEGER} 
+        where   post_id = #{postId,jdbcType=INTEGER}
     </update>
+
     <update id="updateByPrimaryKey" parameterType="com.example.forum4.entity.Post">
         update posts
-        set 
+        set
             user_id =  #{userId,jdbcType=INTEGER},
             title =  #{title,jdbcType=VARCHAR},
             content =  #{content,jdbcType=VARCHAR},
@@ -105,6 +109,6 @@
             created_at =  #{createdAt,jdbcType=TIMESTAMP},
             updated_at =  #{updatedAt,jdbcType=TIMESTAMP},
             view_count =  #{viewCount,jdbcType=INTEGER}
-        where   post_id = #{postId,jdbcType=INTEGER} 
+        where   post_id = #{postId,jdbcType=INTEGER}
     </update>
 </mapper>

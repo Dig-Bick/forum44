@@ -16,9 +16,10 @@ public class PostManagementController {
 
     @GetMapping("/posts")
     public IPage<Post> getPosts(@RequestParam(defaultValue = "1") Integer currentPage,
-                                @RequestParam(defaultValue = "10") Integer pageSize) {
+                                @RequestParam(defaultValue = "10") Integer pageSize,
+                                @RequestParam(required = false) Long categoryId) {
         Page<Post> page = new Page<>(currentPage, pageSize);
-        return postService.page(page);
+        return postService.page(page, categoryId);
     }
 
     @PutMapping("/posts/{postId}")
