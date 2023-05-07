@@ -71,8 +71,9 @@ public class UserServiceImpl implements UserService {
             redisTemplate.opsForValue().set(token, user, 30, TimeUnit.MINUTES);
 
             Map<String, String> responseData = new HashMap<>();
+            responseData.put("userId", Integer.toString(user.getId())); // 添加用户 ID 到响应数据中
             responseData.put("token", token);
-            responseData.put("userId", String.valueOf(user.getId())); // 添加用户 ID 到响应数据中
+
             System.out.println(responseData);
 
             return responseData;
