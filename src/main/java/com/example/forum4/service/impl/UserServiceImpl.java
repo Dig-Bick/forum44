@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -67,11 +69,12 @@ public class UserServiceImpl implements UserService {
     public Map<String, String> login(String username, String password) {
         User user = findByUsername(username);
         if (user != null && md5(password).equals(user.getPassword())) {
-            String token = generateToken(user);
+            //String token = generateToken(user);
+            String token = createJWT(user.getId());
             redisTemplate.opsForValue().set(token, user, 30, TimeUnit.MINUTES);
 
             Map<String, String> responseData = new HashMap<>();
-            responseData.put("userId", Integer.toString(user.getId())); // 添加用户 ID 到响应数据中
+            //responseData.put("userId", Integer.toString(user.getId())); // 添加用户 ID 到响应数据中
             responseData.put("token", token);
 
             System.out.println(responseData);
@@ -99,4 +102,14 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("MD5 加密错误", e);
         }
     }
+
+    @Override
+    public String createJWT(Integer userId) {
+    String secret = "yourSecretKey";
+    Algorithm algorithm = Algorithm.HMAC256(secret);
+    String token = JWT.create()
+        .withClaim("userId", userId)
+        .sign(algorithm);
+    return token;
+}
 }

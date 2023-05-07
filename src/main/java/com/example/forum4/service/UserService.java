@@ -19,4 +19,6 @@ public interface UserService {
     Map<String, String> login(String username, String password);
 
     String generateToken(User user);
+
+    String createJWT(Integer userId);
 }
