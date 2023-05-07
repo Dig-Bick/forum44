@@ -66,4 +66,9 @@ public class Category implements Serializable {
         sb.append("]");
         return sb.toString();
     }
+
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
 }

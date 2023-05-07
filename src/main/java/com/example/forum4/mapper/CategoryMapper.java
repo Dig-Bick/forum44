@@ -24,4 +24,8 @@ public interface CategoryMapper {
     // 添加 findAll 方法
     @Select("SELECT * FROM categories")
     List<Category> findAll();
+
+        // 添加 findById 方法
+    @Select("SELECT * FROM categories WHERE category_id = #{id}")
+    Category findById(Long id);
 }

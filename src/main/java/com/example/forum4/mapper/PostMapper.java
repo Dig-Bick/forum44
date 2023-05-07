@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface PostMapper extends BaseMapper<Post> {
@@ -41,5 +42,20 @@ public interface PostMapper extends BaseMapper<Post> {
 
 
     List<Post> selectByCategoryId(Long categoryId);
+
+    @Select("SELECT * FROM posts WHERE category_id = #{categoryId}")
+    @Results({
+        @Result(column = "post_id", property = "postId"),
+        @Result(column = "user_id", property = "userId"),
+        @Result(column = "title", property = "title"),
+        @Result(column = "content", property = "content"),
+        @Result(column = "category_id", property = "categoryId"),
+        @Result(column = "created_at", property = "createdAt"),
+        @Result(column = "updated_at", property = "updatedAt"),
+        @Result(column = "view_count", property = "viewCount")
+    })
+    List<Post> findByCategoryId(Long categoryId);
+    @Select("SELECT * FROM posts WHERE post_id = #{id}")
+    Optional<Post> findById(Long id);
 
 }

@@ -5,11 +5,13 @@ import com.example.forum4.entity.UserPostView;
 import com.example.forum4.service.PostService;
 import com.example.forum4.service.UserPostViewService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -23,6 +25,15 @@ public class PostController {
     public List<Post> findAll() {
         return postService.findAll();
     }
+    @GetMapping("/{id}")
+public ResponseEntity<Post> getPostById(@PathVariable("id") Long id) {
+    Optional<Post> optionalPost = postService.findById(id);
+    if (optionalPost.isPresent()) {
+        return ResponseEntity.ok(optionalPost.get());
+    } else {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+}
 
     @GetMapping("/recommended")
     public ResponseEntity<List<Post>> getRecommendedPosts(@RequestParam("userId") Long userId) {

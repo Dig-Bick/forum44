@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,4 +65,9 @@ public class PostServiceImpl implements PostService {
         Collections.shuffle(allPosts);
         return allPosts.stream().limit(count).collect(Collectors.toList());
     }
+
+    @Override
+public Optional<Post> findById(Long id) {
+    return postMapper.findById(id);
+}
 }
