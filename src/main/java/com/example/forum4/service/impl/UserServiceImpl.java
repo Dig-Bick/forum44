@@ -72,6 +72,8 @@ public class UserServiceImpl implements UserService {
 
             Map<String, String> responseData = new HashMap<>();
             responseData.put("token", token);
+            responseData.put("userId", String.valueOf(user.getId())); // 添加用户 ID 到响应数据中
+            System.out.println(responseData);
 
             return responseData;
         }

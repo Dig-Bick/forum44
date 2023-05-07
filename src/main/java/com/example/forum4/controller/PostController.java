@@ -57,5 +57,15 @@ public ResponseEntity<Post> getPostById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(recommendedPosts);
     }
 
+    @PostMapping
+    public ResponseEntity<Post> createPost(@RequestBody Post post) {
+        Post newPost = postService.save(post);
+        if (newPost != null) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(newPost);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
     // Other CRUD operations...
 }

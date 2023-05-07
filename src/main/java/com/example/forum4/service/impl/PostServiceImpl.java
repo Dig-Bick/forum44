@@ -67,7 +67,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-public Optional<Post> findById(Long id) {
+    public Optional<Post> findById(Long id) {
     return postMapper.findById(id);
 }
+
+    @Override
+    public Post save(Post post) {
+        return postMapper.save(post);
+    }
 }

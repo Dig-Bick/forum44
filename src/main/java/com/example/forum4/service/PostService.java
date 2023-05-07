@@ -16,4 +16,6 @@ public interface PostService {
     boolean removeById(Integer postId);
     List<Post> getRandomPosts(int count);
     Optional<Post> findById(Long id);
+
+    Post save(Post post);
 }
