@@ -17,5 +17,5 @@ public interface PostService {
     List<Post> getRandomPosts(int count);
     Optional<Post> findById(Long id);
 
-    Post save(Post post);
+    int save(Post post);
 }

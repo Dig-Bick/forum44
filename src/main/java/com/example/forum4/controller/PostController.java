@@ -58,12 +58,12 @@ public ResponseEntity<Post> getPostById(@PathVariable("id") Long id) {
     }
 
     @PostMapping
-    public ResponseEntity<Post> createPost(@RequestBody Post post) {
-        Post newPost = postService.save(post);
-        if (newPost != null) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(newPost);
+    public ResponseEntity<Post> save(@RequestBody Post post) {
+        int result = postService.save(post);
+        if (result > 0) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(post);
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

@@ -72,7 +72,7 @@ public class PostServiceImpl implements PostService {
 }
 
     @Override
-    public Post save(Post post) {
+    public int save(Post post) {
         return postMapper.save(post);
     }
 }

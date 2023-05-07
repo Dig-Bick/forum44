@@ -60,5 +60,5 @@ public interface PostMapper extends BaseMapper<Post> {
 
     @Insert("INSERT INTO posts (user_id, title, content, category_id, created_at, updated_at, view_count) VALUES (#{userId}, #{title}, #{content}, #{categoryId}, #{createdAt}, #{updatedAt}, #{viewCount})")
     @Options(useGeneratedKeys = true, keyProperty = "postId", keyColumn = "post_id")
-    Post save(Post post);
+    int save(Post post);
 }
