@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.forum4.mapper.CommentMapper">
+    <select id="selectCommentsByPostId" resultMap="BaseResultMap">
+    SELECT
+      c.*, u.username as author
+    FROM
+      comments c
+    JOIN
+      user u ON u.id = c.user_id
+    WHERE
+      c.post_id = #{postId}
+    ORDER BY
+      c.created_at DESC
+  </select>
+
+    <resultMap id="BaseResultMap" type="com.example.forum4.entity.Comment">
+            <id property="commentId" column="comment_id" jdbcType="INTEGER"/>
+            <result property="postId" column="post_id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="parentCommentId" column="parent_comment_id" jdbcType="INTEGER"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        comment_id,post_id,user_id,
+        parent_comment_id,content,created_at
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from comments
+        where  comment_id = #{commentId,jdbcType=INTEGER} 
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from comments
+        where  comment_id = #{commentId,jdbcType=INTEGER} 
+    </delete>
+    <insert id="insert" keyColumn="comment_id" keyProperty="commentId" parameterType="com.example.forum4.entity.Comment" useGeneratedKeys="true">
+        insert into comments
+        ( comment_id,post_id,user_id
+        ,parent_comment_id,content,created_at
+        )
+        values (#{commentId,jdbcType=INTEGER},#{postId,jdbcType=INTEGER},#{userId,jdbcType=INTEGER}
+        ,#{parentCommentId,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{createdAt,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <insert id="insertSelective" keyColumn="comment_id" keyProperty="commentId" parameterType="com.example.forum4.entity.Comment" useGeneratedKeys="true">
+        insert into comments
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="commentId != null">comment_id,</if>
+                <if test="postId != null">post_id,</if>
+                <if test="userId != null">user_id,</if>
+                <if test="parentCommentId != null">parent_comment_id,</if>
+                <if test="content != null">content,</if>
+                <if test="createdAt != null">created_at,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="commentId != null">#{commentId,jdbcType=INTEGER},</if>
+                <if test="postId != null">#{postId,jdbcType=INTEGER},</if>
+                <if test="userId != null">#{userId,jdbcType=INTEGER},</if>
+                <if test="parentCommentId != null">#{parentCommentId,jdbcType=INTEGER},</if>
+                <if test="content != null">#{content,jdbcType=VARCHAR},</if>
+                <if test="createdAt != null">#{createdAt,jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.forum4.entity.Comment">
+        update comments
+        <set>
+                <if test="postId != null">
+                    post_id = #{postId,jdbcType=INTEGER},
+                </if>
+                <if test="userId != null">
+                    user_id = #{userId,jdbcType=INTEGER},
+                </if>
+                <if test="parentCommentId != null">
+                    parent_comment_id = #{parentCommentId,jdbcType=INTEGER},
+                </if>
+                <if test="content != null">
+                    content = #{content,jdbcType=VARCHAR},
+                </if>
+                <if test="createdAt != null">
+                    created_at = #{createdAt,jdbcType=TIMESTAMP},
+                </if>
+        </set>
+        where   comment_id = #{commentId,jdbcType=INTEGER} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.example.forum4.entity.Comment">
+        update comments
+        set 
+            post_id =  #{postId,jdbcType=INTEGER},
+            user_id =  #{userId,jdbcType=INTEGER},
+            parent_comment_id =  #{parentCommentId,jdbcType=INTEGER},
+            content =  #{content,jdbcType=VARCHAR},
+            created_at =  #{createdAt,jdbcType=TIMESTAMP}
+        where   comment_id = #{commentId,jdbcType=INTEGER} 
+    </update>
+</mapper>
