@@ -56,6 +56,8 @@ public class Post implements Serializable {
      */
     private Integer viewCount;
 
+    private Integer likeCount;
+
     private static final long serialVersionUID = 1L;
 
     @Override

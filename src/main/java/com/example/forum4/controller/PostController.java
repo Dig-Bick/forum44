@@ -2,6 +2,7 @@ package com.example.forum4.controller;
 
 import com.example.forum4.entity.Post;
 import com.example.forum4.entity.UserPostView;
+import com.example.forum4.service.LikeService;
 import com.example.forum4.service.PostService;
 import com.example.forum4.service.UserPostViewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -21,19 +20,26 @@ public class PostController {
     @Autowired
     private UserPostViewService userPostViewService;
 
+    @Autowired
+    private LikeService likeService;
+
     @GetMapping("/all")
     public List<Post> findAll() {
         return postService.findAll();
     }
     @GetMapping("/{id}")
-public ResponseEntity<Post> getPostById(@PathVariable("id") Long id) {
-    Optional<Post> optionalPost = postService.findById(id);
-    if (optionalPost.isPresent()) {
-        return ResponseEntity.ok(optionalPost.get());
-    } else {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    public ResponseEntity<Post> getPostById(@PathVariable("id") Long id) {
+        Optional<Post> optionalPost = postService.findById(id);
+        if (optionalPost.isPresent()) {
+            Post post = optionalPost.get();
+            Integer likeCount = likeService.getLikeCount(post.getPostId()); // 获取贴子的赞数
+            post.setLikeCount(likeCount); // 将赞数设置到返回的 Post 对象中
+            return ResponseEntity.ok(post);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
-}
+
 
     @GetMapping("/recommended")
     public ResponseEntity<List<Post>> getRecommendedPosts(@RequestParam("userId") Long userId) {
@@ -66,6 +72,40 @@ public ResponseEntity<Post> getPostById(@PathVariable("id") Long id) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    // 点赞
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<String> addLike(@PathVariable("postId") Integer postId, @RequestParam("userId") String userIdStr) {
+        Integer userId = Integer.parseInt(userIdStr); // 将字符串类型的 userId 转换为整数类型
+        if (likeService.addLike(postId, userId)) {
+            return ResponseEntity.status(HttpStatus.CREATED).body("点赞成功");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("点赞失败");
+        }
+    }
+
+    // 取消点赞
+    @DeleteMapping("/{postId}/like")
+    public ResponseEntity<String> removeLike(@PathVariable("postId") Integer postId, @RequestParam("userId") String userIdStr) {
+        Integer userId = Integer.parseInt(userIdStr); // 将字符串类型的 userId 转换为整数类型
+        if (likeService.removeLike(postId, userId)) {
+            return ResponseEntity.status(HttpStatus.OK).body("取消点赞成功");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("取消点赞失败");
+        }
+    }
+
+@GetMapping("/{postId}/like-status")
+public ResponseEntity<Map<String, Object>> getLikeStatusAndCount(@PathVariable("postId") Integer postId, @RequestParam("userId") String userIdStr) {
+    Integer userId = Integer.parseInt(userIdStr);
+    Integer likeCount = likeService.getLikeCount(postId);
+    Boolean isLiked = likeService.isLikedByUser(postId, userId);
+    Map<String, Object> response = new HashMap<>();
+    response.put("likeCount", likeCount);
+    response.put("isLiked", isLiked);
+    return ResponseEntity.ok(response);
+}
+
+
 
     // Other CRUD operations...
 }
