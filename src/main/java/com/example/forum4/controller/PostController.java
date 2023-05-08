@@ -60,6 +60,7 @@ public class PostController {
                 recommendedPosts.addAll(postService.getPostsByCategoryId(longCategoryId));
             }
         }
+        System.out.println(recommendedPosts);
         return ResponseEntity.ok(recommendedPosts);
     }
 
