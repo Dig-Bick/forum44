@@ -3,27 +3,23 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.forum4.mapper.CommentMapper">
-    <select id="selectCommentsByPostId" resultMap="BaseResultMap">
-    SELECT
-      c.*, u.username as author
-    FROM
-      comments c
-    JOIN
-      user u ON u.id = c.user_id
-    WHERE
-      c.post_id = #{postId}
-    ORDER BY
-      c.created_at DESC
-  </select>
+<select id="selectCommentsByPostId" resultMap="BaseResultMap">
+  SELECT c.*, u.username
+  FROM comments c
+  JOIN user u ON c.user_id = u.id
+  WHERE c.post_id = #{postId}
+</select>
 
-    <resultMap id="BaseResultMap" type="com.example.forum4.entity.Comment">
-            <id property="commentId" column="comment_id" jdbcType="INTEGER"/>
-            <result property="postId" column="post_id" jdbcType="INTEGER"/>
-            <result property="userId" column="user_id" jdbcType="INTEGER"/>
-            <result property="parentCommentId" column="parent_comment_id" jdbcType="INTEGER"/>
-            <result property="content" column="content" jdbcType="VARCHAR"/>
-            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
-    </resultMap>
+<resultMap id="BaseResultMap" type="com.example.forum4.entity.Comment">
+    <id property="commentId" column="comment_id" jdbcType="INTEGER"/>
+    <result property="postId" column="post_id" jdbcType="INTEGER"/>
+    <result property="userId" column="user_id" jdbcType="INTEGER"/>
+    <result property="parentCommentId" column="parent_comment_id" jdbcType="INTEGER"/>
+    <result property="content" column="content" jdbcType="VARCHAR"/>
+    <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+    <result property="username" column="username" jdbcType="VARCHAR"/> <!-- 添加这一行 -->
+</resultMap>
+
 
     <sql id="Base_Column_List">
         comment_id,post_id,user_id,

@@ -39,6 +39,7 @@ public class Comment implements Serializable {
      * 
      */
     private Date createdAt;
+    private String username;
 
     private static final long serialVersionUID = 1L;
 
@@ -87,6 +88,7 @@ public class Comment implements Serializable {
         sb.append(", parentCommentId=").append(parentCommentId);
         sb.append(", content=").append(content);
         sb.append(", createdAt=").append(createdAt);
+        sb.append(", username=").append(username);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

@@ -21,4 +21,6 @@ public interface UserService {
     String generateToken(User user);
 
     String createJWT(Integer userId);
+
+    User findById(Integer id);
 }

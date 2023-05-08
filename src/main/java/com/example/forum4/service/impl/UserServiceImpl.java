@@ -111,5 +111,11 @@ public class UserServiceImpl implements UserService {
         .withClaim("userId", userId)
         .sign(algorithm);
     return token;
+
+
 }
+ @Override
+    public User findById(Integer id) {
+        return userMapper.selectByPrimaryKey(id.longValue());
+    }
 }
