@@ -3,6 +3,7 @@ package com.example.forum4.service.impl;
 import com.example.forum4.entity.User;
 import com.example.forum4.mapper.UserMapper;
 import com.example.forum4.service.UserService;
+import com.example.forum4.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -105,12 +106,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String createJWT(Integer userId) {
-    String secret = "yourSecretKey";
-    Algorithm algorithm = Algorithm.HMAC256(secret);
-    String token = JWT.create()
-        .withClaim("userId", userId)
-        .sign(algorithm);
-    return token;
+    System.out.println(JwtUtil.createJWT(userId));
+    return JwtUtil.createJWT(userId);
 
 
 }

@@ -2,6 +2,7 @@ package com.example.forum4.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.forum4.entity.Comment;
 import com.example.forum4.entity.Post;
 import com.example.forum4.mapper.PostMapper;
 import com.example.forum4.service.PostService;
@@ -10,7 +11,10 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -75,4 +79,17 @@ public class PostServiceImpl implements PostService {
     public int save(Post post) {
         return postMapper.save(post);
     }
+
+    @Override
+    public Comment createCommentReply(Long postId, Long commentId, Comment comment, Integer userId) {
+        comment.setPostId(postId.intValue());
+        comment.setUserId(userId);
+
+        comment.setParentCommentId(commentId.intValue());
+        comment.setCreatedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
+
+        postMapper.insertCommentReply(comment);
+        return comment;
+}
+
 }

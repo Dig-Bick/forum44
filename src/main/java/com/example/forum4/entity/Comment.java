@@ -2,7 +2,12 @@ package com.example.forum4.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
 import lombok.Data;
+
+import javax.persistence.*;
+
 
 /**
  * 
@@ -40,6 +45,12 @@ public class Comment implements Serializable {
      */
     private Date createdAt;
     private String username;
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "parent_comment_id", nullable = true)
+    private Comment parentComment;
+
+    @OneToMany(mappedBy = "parentComment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Comment> replies;
 
     private static final long serialVersionUID = 1L;
 

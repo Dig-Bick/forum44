@@ -3,8 +3,13 @@ package com.example.forum4.controller;
 import com.example.forum4.entity.Comment;
 import com.example.forum4.entity.User;
 import com.example.forum4.service.CommentService;
+import com.example.forum4.service.PostService;
 import com.example.forum4.service.UserService;
+import com.example.forum4.util.JwtUtil;
+import io.jsonwebtoken.Claims;
+import org.elasticsearch.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +25,11 @@ public class CommentController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PostService postService;
+
+
 
     @PostMapping
     public ResponseEntity<String> createComment(@RequestBody Comment comment) {
@@ -46,5 +56,21 @@ public class CommentController {
         }
         return ResponseEntity.ok(comments);
     }
+
+    @PostMapping("/posts/{postId}/comments/{commentId}/replies")
+    public ResponseEntity<Comment> createReply(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody Comment comment, @RequestHeader("Authorization") String token) {
+        System.out.println("Create reply request received for postId: " + postId + ", commentId: " + commentId);
+        String jwt = token.substring(7);
+        Claims claims = JwtUtil.parseJWT(jwt);
+        System.out.println("Parsed claims: " + claims.toString());
+        User user = userService.findById(JwtUtil.parseJWT(jwt).get("userId", Integer.class));
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        Comment result = postService.createCommentReply(postId, commentId, comment, user.getId());
+        return ResponseEntity.ok().body(result);
+    }
+
 
 }

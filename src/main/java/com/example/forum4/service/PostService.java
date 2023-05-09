@@ -2,6 +2,7 @@ package com.example.forum4.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.forum4.entity.Comment;
 import com.example.forum4.entity.Post;
 
 import java.util.List;
@@ -16,6 +17,8 @@ public interface PostService {
     boolean removeById(Integer postId);
     List<Post> getRandomPosts(int count);
     Optional<Post> findById(Long id);
+    Comment createCommentReply(Long postId, Long commentId, Comment comment, Integer userId);
+
 
     int save(Post post);
 }
