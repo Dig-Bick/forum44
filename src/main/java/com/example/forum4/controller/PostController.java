@@ -95,16 +95,33 @@ public class PostController {
         }
     }
 
-@GetMapping("/{postId}/like-status")
-public ResponseEntity<Map<String, Object>> getLikeStatusAndCount(@PathVariable("postId") Integer postId, @RequestParam("userId") String userIdStr) {
-    Integer userId = Integer.parseInt(userIdStr);
-    Integer likeCount = likeService.getLikeCount(postId);
-    Boolean isLiked = likeService.isLikedByUser(postId, userId);
-    Map<String, Object> response = new HashMap<>();
-    response.put("likeCount", likeCount);
-    response.put("isLiked", isLiked);
-    return ResponseEntity.ok(response);
-}
+    @GetMapping("/{postId}/like-status")
+    public ResponseEntity<Map<String, Object>> getLikeStatusAndCount(@PathVariable("postId") Integer postId, @RequestParam("userId") String userIdStr) {
+        Integer userId = Integer.parseInt(userIdStr);
+        Integer likeCount = likeService.getLikeCount(postId);
+        Boolean isLiked = likeService.isLikedByUser(postId, userId);
+        Map<String, Object> response = new HashMap<>();
+        response.put("likeCount", likeCount);
+        response.put("isLiked", isLiked);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/user/{userId}/posts")
+    public ResponseEntity<List<Post>> getPostsByUserId(@PathVariable Integer userId) {
+        List<Post> posts = postService.getPostsByUserId(userId);
+        return ResponseEntity.ok(posts);
+    }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<String> deletePost(@PathVariable Long postId) {
+        try {
+            postService.removeById(postId.intValue());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 
 

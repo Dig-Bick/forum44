@@ -38,5 +38,10 @@ public class CommentServiceImpl implements CommentService {
             }
         }
     }
+    @Override
+    public void deleteComment(Long commentId) {
+      commentMapper.deleteByPrimaryKey(commentId);
+    }
+
 
 }

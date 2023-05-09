@@ -90,6 +90,12 @@ public class PostServiceImpl implements PostService {
 
         postMapper.insertCommentReply(comment);
         return comment;
-}
+    }
+
+    @Override
+    public List<Post> getPostsByUserId(Integer userId) {
+        return postMapper.selectPostsByUserId(userId);
+    }
+
 
 }

@@ -21,6 +21,11 @@
         updated_at,view_count
     </sql>
 
+    <select id="selectPostsByUserId" resultMap="BaseResultMap">
+        SELECT * FROM posts WHERE user_id = #{userId}
+    </select>
+
+
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />

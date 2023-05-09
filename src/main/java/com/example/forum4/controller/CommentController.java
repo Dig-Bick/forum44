@@ -75,16 +75,23 @@ public ResponseEntity<List<Comment>> getCommentsByPostId(@PathVariable String po
         return ResponseEntity.ok().body(result);
     }
     private List<Comment> getCommentReplies(Comment comment) {
-    List<Comment> replies = commentService.getRepliesByParentCommentId(comment.getCommentId());
-    for (Comment reply : replies) {
-        User user = userService.findById(reply.getUserId());
-        if (user != null) {
-            reply.setUsername(user.getUsername());
+        List<Comment> replies = commentService.getRepliesByParentCommentId(comment.getCommentId());
+        for (Comment reply : replies) {
+            User user = userService.findById(reply.getUserId());
+            if (user != null) {
+                reply.setUsername(user.getUsername());
+            }
+            reply.setReplies(getCommentReplies(reply));
         }
-        reply.setReplies(getCommentReplies(reply));
+        return replies;
     }
-    return replies;
-}
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
+      commentService.deleteComment(commentId);
+      return ResponseEntity.noContent().build();
+    }
+
 
 
 

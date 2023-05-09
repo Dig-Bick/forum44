@@ -10,5 +10,6 @@ public interface CommentService {
     List<Comment> getCommentsByPostId(Integer postId);
     List<Comment> getRepliesByParentCommentId(Integer parentCommentId);
     void fetchReplies(Comment comment);
+    void deleteComment(Long commentId);
 
 }

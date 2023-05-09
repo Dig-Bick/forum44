@@ -66,4 +66,7 @@ public interface PostMapper extends BaseMapper<Post> {
     @Insert("INSERT INTO comments (post_id, user_id, parent_comment_id, content, created_at) VALUES (#{postId}, #{userId}, #{parentCommentId}, #{content}, #{createdAt})")
     @Options(useGeneratedKeys = true, keyProperty = "commentId", keyColumn = "comment_id")
     int insertCommentReply(Comment comment);
+
+    List<Post> selectPostsByUserId(Integer userId);
+
 }

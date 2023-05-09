@@ -18,7 +18,7 @@ public interface PostService {
     List<Post> getRandomPosts(int count);
     Optional<Post> findById(Long id);
     Comment createCommentReply(Long postId, Long commentId, Comment comment, Integer userId);
-
+    List<Post> getPostsByUserId(Integer userId);
 
     int save(Post post);
 }
