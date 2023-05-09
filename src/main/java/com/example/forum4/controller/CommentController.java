@@ -39,23 +39,26 @@ public class CommentController {
     }
 
 
-    @GetMapping("/{postId}")
-    public ResponseEntity<List<Comment>> getCommentsByPostId(@PathVariable String postId) {
-        Integer postIdInt;
-        try {
-            postIdInt = Integer.parseInt(postId);
-        } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().build();
-        }
-        List<Comment> comments = commentService.getCommentsByPostId(postIdInt);
-        for (Comment comment : comments) {
-            User user = userService.findById(comment.getUserId());
-            if (user != null) {
-                comment.setUsername(user.getUsername());
-            }
-        }
-        return ResponseEntity.ok(comments);
+@GetMapping("/{postId}")
+public ResponseEntity<List<Comment>> getCommentsByPostId(@PathVariable String postId) {
+    Integer postIdInt;
+    try {
+        postIdInt = Integer.parseInt(postId);
+    } catch (NumberFormatException e) {
+        return ResponseEntity.badRequest().build();
     }
+    List<Comment> comments = commentService.getCommentsByPostId(postIdInt);
+    for (Comment comment : comments) {
+        User user = userService.findById(comment.getUserId());
+        if (user != null) {
+            comment.setUsername(user.getUsername());
+        }
+        comment.setReplies(getCommentReplies(comment));
+    }
+    return ResponseEntity.ok(comments);
+}
+
+
 
     @PostMapping("/posts/{postId}/comments/{commentId}/replies")
     public ResponseEntity<Comment> createReply(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody Comment comment, @RequestHeader("Authorization") String token) {
@@ -71,6 +74,18 @@ public class CommentController {
         Comment result = postService.createCommentReply(postId, commentId, comment, user.getId());
         return ResponseEntity.ok().body(result);
     }
+    private List<Comment> getCommentReplies(Comment comment) {
+    List<Comment> replies = commentService.getRepliesByParentCommentId(comment.getCommentId());
+    for (Comment reply : replies) {
+        User user = userService.findById(reply.getUserId());
+        if (user != null) {
+            reply.setUsername(user.getUsername());
+        }
+        reply.setReplies(getCommentReplies(reply));
+    }
+    return replies;
+}
+
 
 
 }

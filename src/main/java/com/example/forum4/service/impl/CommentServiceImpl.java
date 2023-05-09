@@ -24,4 +24,19 @@ public class CommentServiceImpl implements CommentService {
     public List<Comment> getCommentsByPostId(Integer postId) {
         return commentMapper.selectCommentsByPostId(postId);
     }
+    @Override
+    public List<Comment> getRepliesByParentCommentId(Integer parentCommentId) {
+        return commentMapper.findByParentCommentId(parentCommentId);
+    }
+    @Override
+    public void fetchReplies(Comment comment) {
+        List<Comment> replies = commentMapper.findByParentCommentId(comment.getCommentId());
+        if (!replies.isEmpty()) {
+            comment.setReplies(replies);
+            for (Comment reply : replies) {
+                fetchReplies(reply);
+            }
+        }
+    }
+
 }

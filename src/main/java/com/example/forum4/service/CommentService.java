@@ -8,4 +8,7 @@ import java.util.List;
 public interface CommentService {
     void createComment(Comment comment);
     List<Comment> getCommentsByPostId(Integer postId);
+    List<Comment> getRepliesByParentCommentId(Integer parentCommentId);
+    void fetchReplies(Comment comment);
+
 }

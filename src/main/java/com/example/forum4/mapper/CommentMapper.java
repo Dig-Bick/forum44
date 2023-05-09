@@ -2,6 +2,7 @@ package com.example.forum4.mapper;
 
 import com.example.forum4.entity.Comment;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -27,5 +28,8 @@ public interface CommentMapper {
     int updateByPrimaryKey(Comment record);
 
     List<Comment> selectCommentsByPostId(Integer postId);
+
+    @Select("SELECT * FROM comments WHERE parent_comment_id = #{parentCommentId}")
+    List<Comment> findByParentCommentId(Integer parentCommentId);
 
 }
