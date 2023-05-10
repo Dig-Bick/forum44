@@ -11,5 +11,7 @@ public interface CommentService {
     List<Comment> getRepliesByParentCommentId(Integer parentCommentId);
     void fetchReplies(Comment comment);
     void deleteComment(Long commentId);
+    Long findUserIdByCommentId(Long commentId) ;
+    Long findUserIdByPostId(Long postId);
 
 }

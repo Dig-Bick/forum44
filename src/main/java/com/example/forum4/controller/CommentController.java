@@ -1,6 +1,8 @@
 package com.example.forum4.controller;
 
+import com.example.forum4.config.RabbitMQConfig;
 import com.example.forum4.entity.Comment;
+import com.example.forum4.entity.Notification;
 import com.example.forum4.entity.User;
 import com.example.forum4.service.CommentService;
 import com.example.forum4.service.PostService;
@@ -8,6 +10,7 @@ import com.example.forum4.service.UserService;
 import com.example.forum4.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import org.elasticsearch.ResourceNotFoundException;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,14 +32,34 @@ public class CommentController {
     @Autowired
     private PostService postService;
 
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
 
 
     @PostMapping
     public ResponseEntity<String> createComment(@RequestBody Comment comment) {
         comment.setCreatedAt(new Date());
         commentService.createComment(comment);
+
+        Long recipientUserId;
+        if (comment.getParentCommentId() != null) {
+            recipientUserId = commentService.findUserIdByCommentId(Long.valueOf(comment.getParentCommentId()));
+        } else {
+            recipientUserId = commentService.findUserIdByPostId(Long.valueOf(comment.getPostId()));
+        }
+
+        if (recipientUserId != null) {
+            String message = "您有一条新评论: " + comment.getContent();
+            Notification notification = new Notification(recipientUserId.intValue(), message);
+            rabbitTemplate.convertAndSend(RabbitMQConfig.NOTIFICATION_QUEUE, notification);
+        }
+
         return ResponseEntity.ok("Comment created");
     }
+
+
+
 
 
 @GetMapping("/{postId}")

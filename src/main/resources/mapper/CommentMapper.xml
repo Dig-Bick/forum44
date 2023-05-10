@@ -26,6 +26,11 @@
         parent_comment_id,content,created_at
     </sql>
 
+    <select id="findUserIdByCommentId" resultType="java.lang.Long">
+        SELECT user_id FROM comments WHERE id = #{commentId}
+    </select>
+
+
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />

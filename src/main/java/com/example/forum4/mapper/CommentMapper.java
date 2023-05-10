@@ -32,4 +32,7 @@ public interface CommentMapper {
     @Select("SELECT * FROM comments WHERE parent_comment_id = #{parentCommentId}")
     List<Comment> findByParentCommentId(Integer parentCommentId);
 
+    Long findUserIdByCommentId(Long commentId);
+
+
 }

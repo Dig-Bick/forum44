@@ -3,6 +3,7 @@ package com.example.forum4.service.impl;
 
 import com.example.forum4.entity.Comment;
 import com.example.forum4.mapper.CommentMapper;
+import com.example.forum4.mapper.PostMapper;
 import com.example.forum4.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     private CommentMapper commentMapper;
+
+    @Autowired
+    private PostMapper postMapper;
 
     @Override
     public void createComment(Comment comment) {
@@ -43,5 +47,14 @@ public class CommentServiceImpl implements CommentService {
       commentMapper.deleteByPrimaryKey(commentId);
     }
 
+    @Override
+    public Long findUserIdByCommentId(Long commentId) {
+        return commentMapper.findUserIdByCommentId(commentId);
+    }
+
+    @Override
+    public Long findUserIdByPostId(Long postId) {
+        return postMapper.findUserIdByPostId(postId);
+    }
 
 }

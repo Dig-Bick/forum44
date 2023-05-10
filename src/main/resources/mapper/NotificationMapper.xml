@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.forum4.mapper.NotificationMapper">
+
+    <insert id="saveNotification" parameterType="com.example.forum4.entity.Notification">
+        INSERT INTO notifications (user_id, message)
+        VALUES (#{userId}, #{message})
+    </insert>
+
+    <select id="findUserIdByCommentId" resultType="java.lang.Long">
+        SELECT user_id FROM comments WHERE id = #{commentId}
+    </select>
+
+    <select id="findByUserId" resultType="com.example.forum4.entity.Notification">
+        SELECT * FROM notifications WHERE user_id = #{userId}
+    </select>
+
+</mapper>

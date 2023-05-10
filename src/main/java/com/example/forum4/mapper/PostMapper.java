@@ -69,4 +69,7 @@ public interface PostMapper extends BaseMapper<Post> {
 
     List<Post> selectPostsByUserId(Integer userId);
 
+    @Select("SELECT user_id FROM posts WHERE post_id = #{postId}")
+    Long findUserIdByPostId(Long postId);
+
 }
