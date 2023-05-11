@@ -1,11 +1,16 @@
 package com.example.forum4.controller;
 
+import com.example.forum4.entity.IndexedPost;
 import com.example.forum4.entity.Post;
 import com.example.forum4.entity.UserPostView;
 import com.example.forum4.service.LikeService;
+import com.example.forum4.service.PostSearchRepository;
 import com.example.forum4.service.PostService;
 import com.example.forum4.service.UserPostViewService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.client.elc.QueryBuilders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +27,9 @@ public class PostController {
 
     @Autowired
     private LikeService likeService;
+
+    @Autowired
+    private PostSearchRepository postSearchRepository;
 
     @GetMapping("/all")
     public List<Post> findAll() {
@@ -68,11 +76,26 @@ public class PostController {
     public ResponseEntity<Post> save(@RequestBody Post post) {
         int result = postService.save(post);
         if (result > 0) {
+            // 将 Post 转换为 IndexedPost，然后保存到 Elasticsearch
+            IndexedPost indexedPost = new IndexedPost();
+            indexedPost.setPostId(post.getPostId());
+            indexedPost.setUserId(post.getUserId());
+            indexedPost.setTitle(post.getTitle());
+            indexedPost.setContent(post.getContent());
+            indexedPost.setCategoryId(post.getCategoryId());
+            indexedPost.setCreatedAt(post.getCreatedAt());
+            indexedPost.setUpdatedAt(post.getUpdatedAt());
+            indexedPost.setViewCount(post.getViewCount());
+            indexedPost.setLikeCount(post.getLikeCount());
+            postSearchRepository.save(indexedPost);
+
             return ResponseEntity.status(HttpStatus.CREATED).body(post);
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+
     // 点赞
     @PostMapping("/{postId}/like")
     public ResponseEntity<String> addLike(@PathVariable("postId") Integer postId, @RequestParam("userId") String userIdStr) {
@@ -120,6 +143,14 @@ public class PostController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<IndexedPost>> searchPosts(@RequestParam String query) {
+        System.out.println(query);
+        Page<IndexedPost> posts = postSearchRepository.findByContentOrTitle(query,query, Pageable.unpaged());
+        System.out.println(posts.getContent());
+        return new ResponseEntity<>(posts.getContent(), HttpStatus.OK);
     }
 
 
