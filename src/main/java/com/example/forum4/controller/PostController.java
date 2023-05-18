@@ -3,10 +3,7 @@ package com.example.forum4.controller;
 import com.example.forum4.entity.IndexedPost;
 import com.example.forum4.entity.Post;
 import com.example.forum4.entity.UserPostView;
-import com.example.forum4.service.LikeService;
-import com.example.forum4.service.PostSearchRepository;
-import com.example.forum4.service.PostService;
-import com.example.forum4.service.UserPostViewService;
+import com.example.forum4.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +29,9 @@ public class PostController {
 
     @Autowired
     private PostSearchRepository postSearchRepository;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/all")
     public List<Post> findAll() {
@@ -63,28 +63,57 @@ public class PostController {
 
 
 
+//    @GetMapping("/recommended")
+//    public ResponseEntity<List<Post>> getRecommendedPosts(@RequestParam("userId") Long userId) {
+//        // 获取用户浏览过的帖子
+//        List<UserPostView> views = userPostViewService.getViewsByUserId(userId);
+//
+//        // 根据浏览过的帖子获取推荐帖子，这里只是一个简单示例，您可以根据实际需求进行修改
+//        List<Post> recommendedPosts = new ArrayList<>();
+//
+//        if (views.isEmpty()) {
+//            // 如果用户没有浏览过任何帖子，则返回随机推荐的帖子
+//            return ResponseEntity.ok(postService.getRandomPosts(5)); // 返回 5 个随机推荐的帖子
+//        } else {
+//            for (UserPostView view : views) {
+//                Integer categoryId = view.getPost().getCategoryId();
+//                // 将 Integer 类型的 categoryId 转换为 Long 类型
+//                Long longCategoryId = categoryId != null ? categoryId.longValue() : null;
+//                recommendedPosts.addAll(postService.getPostsByCategoryId(longCategoryId));
+//            }
+//        }
+//        System.out.println(recommendedPosts);
+//        return ResponseEntity.ok(recommendedPosts);
+//    }
     @GetMapping("/recommended")
     public ResponseEntity<List<Post>> getRecommendedPosts(@RequestParam("userId") Long userId) {
         // 获取用户浏览过的帖子
         List<UserPostView> views = userPostViewService.getViewsByUserId(userId);
 
-        // 根据浏览过的帖子获取推荐帖子，这里只是一个简单示例，您可以根据实际需求进行修改
+        // 获取用户喜欢的帖子类别
+       List<Integer> likedCategories = userService.getLikedCategories(userId.intValue());
+
+        // 如果用户没有浏览过任何帖子或者没有喜欢的类别，则返回随机推荐的帖子
+        if (views.isEmpty() || likedCategories.isEmpty()) {
+            return ResponseEntity.ok(postService.getRandomPosts(5)); // 返回 5 个随机推荐的帖子
+        }
+
+        // 用于存储推荐帖子的列表
         List<Post> recommendedPosts = new ArrayList<>();
 
-        if (views.isEmpty()) {
-            // 如果用户没有浏览过任何帖子，则返回随机推荐的帖子
-            return ResponseEntity.ok(postService.getRandomPosts(5)); // 返回 1 个随机推荐的帖子
-        } else {
-            for (UserPostView view : views) {
-                Integer categoryId = view.getPost().getCategoryId();
-                // 将 Integer 类型的 categoryId 转换为 Long 类型
-                Long longCategoryId = categoryId != null ? categoryId.longValue() : null;
-                recommendedPosts.addAll(postService.getPostsByCategoryId(longCategoryId));
-            }
+        // 根据用户浏览过的帖子类别和喜欢的类别获取推荐帖子
+        for (Integer categoryId : likedCategories) {
+            recommendedPosts.addAll(postService.getTopPostsByCategoryId(categoryId, 5)); // 获取每个类别下的 5 个热门帖子
         }
-        System.out.println(recommendedPosts);
+
+        // 如果推荐的帖子数量不够，再随机推荐一些帖子
+        if (recommendedPosts.size() < 10) {
+            recommendedPosts.addAll(postService.getRandomPosts(10 - recommendedPosts.size()));
+        }
+
         return ResponseEntity.ok(recommendedPosts);
     }
+
 
     @PostMapping
     public ResponseEntity<Post> save(@RequestBody Post post) {
@@ -114,12 +143,21 @@ public class PostController {
     @PostMapping("/{postId}/like")
     public ResponseEntity<String> addLike(@PathVariable("postId") Integer postId, @RequestParam("userId") String userIdStr) {
         Integer userId = Integer.parseInt(userIdStr); // 将字符串类型的 userId 转换为整数类型
-        if (likeService.addLike(postId, userId)) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("点赞成功");
+        Optional<Post> optionalPost = postService.findById((long) postId);
+        if (optionalPost.isPresent()) {
+            Post post = optionalPost.get();
+            postService.saveUserLike(userId, Long.valueOf(post.getCategoryId()));
+
+            if (likeService.addLike(postId, userId)) {
+                return ResponseEntity.status(HttpStatus.CREATED).body("点赞成功并保存用户类别喜好");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("点赞失败");
+            }
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("点赞失败");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("帖子不存在");
         }
     }
+
 
     // 取消点赞
     @DeleteMapping("/{postId}/like")

@@ -3,14 +3,7 @@ package com.example.forum4.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.forum4.entity.Comment;
 import com.example.forum4.entity.Post;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -74,5 +67,22 @@ public interface PostMapper extends BaseMapper<Post> {
 
    @Update("UPDATE posts SET view_count = view_count + 1 WHERE post_id = #{id}")
     void updateViewCount(Long id);
+
+    @Select("SELECT * FROM posts WHERE category_id = #{categoryId} ORDER BY view_count DESC LIMIT #{limit}")
+    @Results({
+        @Result(column = "post_id", property = "postId"),
+        @Result(column = "user_id", property = "userId"),
+        @Result(column = "title", property = "title"),
+        @Result(column = "content", property = "content"),
+        @Result(column = "category_id", property = "categoryId"),
+        @Result(column = "created_at", property = "createdAt"),
+        @Result(column = "updated_at", property = "updatedAt"),
+        @Result(column = "view_count", property = "viewCount")
+    })
+    List<Post> selectTopPostsByCategoryId(@Param("categoryId") Integer categoryId, @Param("limit") int limit);
+
+    @Insert("INSERT INTO user_category_likes (user_id, category_id) VALUES (#{userId}, #{categoryId})")
+    void insertUserLike(Integer userId, Long categoryId);
+
 
 }

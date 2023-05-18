@@ -102,11 +102,18 @@ public class UserServiceImpl implements UserService {
     public String createJWT(Integer userId) {
     System.out.println(JwtUtil.createJWT(userId));
     return JwtUtil.createJWT(userId);
-
-
-}
- @Override
-    public User findById(Integer id) {
-        return userMapper.selectByPrimaryKey(id.longValue());
     }
-}
+
+    @Override
+    public User findById(Integer id) {
+            return userMapper.selectByPrimaryKey(id.longValue());
+        }
+
+        @Override
+    public List<Integer> getLikedCategories(Integer userId) {
+        return userMapper.selectLikedCategoriesByUserId(userId);
+    }
+
+    }
+
+

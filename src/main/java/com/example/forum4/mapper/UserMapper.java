@@ -45,4 +45,8 @@ public interface UserMapper {
 
     @Select("SELECT COUNT(*) FROM user")
     long count();
+
+    @Select("SELECT category_id FROM user_category_likes WHERE user_id = #{userId}")
+    List<Integer> selectLikedCategoriesByUserId(Integer userId);
+
 }

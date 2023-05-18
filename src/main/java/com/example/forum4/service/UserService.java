@@ -23,4 +23,7 @@ public interface UserService {
     String createJWT(Integer userId);
 
     User findById(Integer id);
+
+    List<Integer> getLikedCategories(Integer userId);
+
 }

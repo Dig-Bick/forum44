@@ -20,6 +20,9 @@ public interface PostService {
     Comment createCommentReply(Long postId, Long commentId, Comment comment, Integer userId);
     List<Post> getPostsByUserId(Integer userId);
     void updateViewCount(Long id);
+    List<Post> getTopPostsByCategoryId(Integer categoryId, int limit);
+    void saveUserLike(Integer userId, Long categoryId);
+
 
     int save(Post post);
 }

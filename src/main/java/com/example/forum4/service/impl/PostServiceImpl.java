@@ -101,6 +101,17 @@ public class PostServiceImpl implements PostService {
         postMapper.updateViewCount(id);
     }
 
+    @Override
+    public List<Post> getTopPostsByCategoryId(Integer categoryId, int limit) {
+        return postMapper.selectTopPostsByCategoryId(categoryId, limit);
+    }
+
+    @Override
+    public void saveUserLike(Integer userId, Long categoryId) {
+        postMapper.insertUserLike(userId, categoryId);
+    }
+
+
 
 
 }
