@@ -24,4 +24,9 @@ public class NotificationService {
     public List<Notification> getNotificationsByUserId(Long userId) {
         return notificationMapper.findByUserId(userId);
     }
+
+    public void deleteNotification(Long id) {
+    notificationMapper.deleteNotification(id);
+}
+
 }
