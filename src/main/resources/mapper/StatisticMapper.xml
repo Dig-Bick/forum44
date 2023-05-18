@@ -28,7 +28,7 @@
     <select id="getTotalUsers" resultType="int">SELECT COUNT(*) FROM user</select>
     <select id="getTotalPosts" resultType="int">SELECT COUNT(*) FROM posts</select>
     <select id="getActiveUsers" resultType="int">SELECT COUNT(DISTINCT user_id) FROM user_post_views</select>
-    <select id="getTotalPageViews" resultType="int">SELECT SUM(view_count) FROM posts</select>
+    <select id="getTotalPageViews" resultType="int">SELECT COUNT(*) FROM user_post_views</select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from statistics
