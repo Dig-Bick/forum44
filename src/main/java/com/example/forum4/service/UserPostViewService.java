@@ -21,4 +21,6 @@ public class UserPostViewService {
         return userPostViewMapper.selectByUserId(userId);
     }
 
+    public void addUserPostView(UserPostView userPostView){ userPostViewMapper.insert(userPostView);}
+
 }

@@ -72,4 +72,7 @@ public interface PostMapper extends BaseMapper<Post> {
     @Select("SELECT user_id FROM posts WHERE post_id = #{postId}")
     Long findUserIdByPostId(Long postId);
 
+   @Update("UPDATE posts SET view_count = view_count + 1 WHERE post_id = #{id}")
+    void updateViewCount(Long id);
+
 }

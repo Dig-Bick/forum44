@@ -13,4 +13,6 @@ public interface UserPostViewMapper {
 
     List<UserPostView> selectByUserId(@Param("userId") Long userId);
 
+
+
 }

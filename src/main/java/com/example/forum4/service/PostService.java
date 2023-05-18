@@ -19,6 +19,7 @@ public interface PostService {
     Optional<Post> findById(Long id);
     Comment createCommentReply(Long postId, Long commentId, Comment comment, Integer userId);
     List<Post> getPostsByUserId(Integer userId);
+    void updateViewCount(Long id);
 
     int save(Post post);
 }

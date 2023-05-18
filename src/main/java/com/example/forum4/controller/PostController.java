@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
@@ -36,10 +38,21 @@ public class PostController {
         return postService.findAll();
     }
     @GetMapping("/{id}")
-    public ResponseEntity<Post> getPostById(@PathVariable("id") Long id) {
+    public ResponseEntity<Post> getPostById(@PathVariable("id") Long id, @RequestParam("userId") Integer userId) {
         Optional<Post> optionalPost = postService.findById(id);
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
+
+            // Update the view count of the post
+            postService.updateViewCount(id);
+
+            // Update the user post view
+            UserPostView userPostView = new UserPostView();
+            userPostView.setUserId(userId);
+            userPostView.setPostId(id.intValue());
+            userPostView.setViewTime(Timestamp.valueOf(LocalDateTime.now()));
+            userPostViewService.addUserPostView(userPostView);
+
             Integer likeCount = likeService.getLikeCount(post.getPostId()); // 获取贴子的赞数
             post.setLikeCount(likeCount); // 将赞数设置到返回的 Post 对象中
             return ResponseEntity.ok(post);
@@ -47,6 +60,7 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
 
 
     @GetMapping("/recommended")

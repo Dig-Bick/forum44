@@ -96,6 +96,11 @@ public class PostServiceImpl implements PostService {
     public List<Post> getPostsByUserId(Integer userId) {
         return postMapper.selectPostsByUserId(userId);
     }
+    @Override
+    public void updateViewCount(Long id) {
+        postMapper.updateViewCount(id);
+    }
+
 
 
 }
