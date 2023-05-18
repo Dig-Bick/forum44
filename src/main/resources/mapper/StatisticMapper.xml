@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.forum4.mapper.StatisticMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.forum4.entity.Statistic">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="userCount" column="user_count" jdbcType="INTEGER"/>
+            <result property="postCount" column="post_count" jdbcType="INTEGER"/>
+            <result property="activeUserCount" column="active_user_count" jdbcType="INTEGER"/>
+            <result property="viewsCount" column="views_count" jdbcType="INTEGER"/>
+            <result property="lastUpdated" column="last_updated" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_count,post_count,
+        active_user_count,views_count,last_updated
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from statistics
+        where  id = #{id,jdbcType=INTEGER} 
+    </select>
+
+    <select id="getTotalUsers" resultType="int">SELECT COUNT(*) FROM user</select>
+    <select id="getTotalPosts" resultType="int">SELECT COUNT(*) FROM posts</select>
+    <select id="getActiveUsers" resultType="int">SELECT COUNT(DISTINCT user_id) FROM user_post_views</select>
+    <select id="getTotalPageViews" resultType="int">SELECT SUM(view_count) FROM posts</select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from statistics
+        where  id = #{id,jdbcType=INTEGER} 
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.example.forum4.entity.Statistic" useGeneratedKeys="true">
+        insert into statistics
+        ( id,user_count,post_count
+        ,active_user_count,views_count,last_updated
+        )
+        values (#{id,jdbcType=INTEGER},#{userCount,jdbcType=INTEGER},#{postCount,jdbcType=INTEGER}
+        ,#{activeUserCount,jdbcType=INTEGER},#{viewsCount,jdbcType=INTEGER},#{lastUpdated,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.example.forum4.entity.Statistic" useGeneratedKeys="true">
+        insert into statistics
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="userCount != null">user_count,</if>
+                <if test="postCount != null">post_count,</if>
+                <if test="activeUserCount != null">active_user_count,</if>
+                <if test="viewsCount != null">views_count,</if>
+                <if test="lastUpdated != null">last_updated,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id,jdbcType=INTEGER},</if>
+                <if test="userCount != null">#{userCount,jdbcType=INTEGER},</if>
+                <if test="postCount != null">#{postCount,jdbcType=INTEGER},</if>
+                <if test="activeUserCount != null">#{activeUserCount,jdbcType=INTEGER},</if>
+                <if test="viewsCount != null">#{viewsCount,jdbcType=INTEGER},</if>
+                <if test="lastUpdated != null">#{lastUpdated,jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.forum4.entity.Statistic">
+        update statistics
+        <set>
+                <if test="userCount != null">
+                    user_count = #{userCount,jdbcType=INTEGER},
+                </if>
+                <if test="postCount != null">
+                    post_count = #{postCount,jdbcType=INTEGER},
+                </if>
+                <if test="activeUserCount != null">
+                    active_user_count = #{activeUserCount,jdbcType=INTEGER},
+                </if>
+                <if test="viewsCount != null">
+                    views_count = #{viewsCount,jdbcType=INTEGER},
+                </if>
+                <if test="lastUpdated != null">
+                    last_updated = #{lastUpdated,jdbcType=TIMESTAMP},
+                </if>
+        </set>
+        where   id = #{id,jdbcType=INTEGER} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.example.forum4.entity.Statistic">
+        update statistics
+        set 
+            user_count =  #{userCount,jdbcType=INTEGER},
+            post_count =  #{postCount,jdbcType=INTEGER},
+            active_user_count =  #{activeUserCount,jdbcType=INTEGER},
+            views_count =  #{viewsCount,jdbcType=INTEGER},
+            last_updated =  #{lastUpdated,jdbcType=TIMESTAMP}
+        where   id = #{id,jdbcType=INTEGER} 
+    </update>
+</mapper>
