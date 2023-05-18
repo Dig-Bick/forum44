@@ -70,16 +70,10 @@ public class UserServiceImpl implements UserService {
     public Map<String, String> login(String username, String password) {
         User user = findByUsername(username);
         if (user != null && md5(password).equals(user.getPassword())) {
-            //String token = generateToken(user);
             String token = createJWT(user.getId());
             redisTemplate.opsForValue().set(token, user, 30, TimeUnit.MINUTES);
-
             Map<String, String> responseData = new HashMap<>();
-            //responseData.put("userId", Integer.toString(user.getId())); // 添加用户 ID 到响应数据中
             responseData.put("token", token);
-
-            System.out.println(responseData);
-
             return responseData;
         }
         return null;

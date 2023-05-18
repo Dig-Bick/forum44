@@ -25,7 +25,6 @@ public class LoginController {
         if (result != null && !result.isEmpty()) {
             String token = result.get("token");
 
-            // 创建一个新的 Map 并将 token 放入
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
 

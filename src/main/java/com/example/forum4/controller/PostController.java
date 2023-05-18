@@ -59,7 +59,7 @@ public class PostController {
 
         if (views.isEmpty()) {
             // 如果用户没有浏览过任何帖子，则返回随机推荐的帖子
-            return ResponseEntity.ok(postService.getRandomPosts(1)); // 返回 1 个随机推荐的帖子
+            return ResponseEntity.ok(postService.getRandomPosts(5)); // 返回 1 个随机推荐的帖子
         } else {
             for (UserPostView view : views) {
                 Integer categoryId = view.getPost().getCategoryId();
