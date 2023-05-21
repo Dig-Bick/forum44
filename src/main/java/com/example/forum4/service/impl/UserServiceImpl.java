@@ -55,7 +55,8 @@ public class UserServiceImpl implements UserService {
         User existingUser = userMapper.selectById(id);
         if (existingUser != null) {
             existingUser.setUsername(user.getUsername());
-            existingUser.setPassword(md5(user.getPassword()));
+            existingUser.setPassword(user.getPassword());
+            existingUser.setEmail(user.getEmail());
             userMapper.update(existingUser);
         }
         return existingUser;
@@ -114,6 +115,10 @@ public class UserServiceImpl implements UserService {
         return userMapper.selectLikedCategoriesByUserId(userId);
     }
 
+
+
     }
+
+
 
 

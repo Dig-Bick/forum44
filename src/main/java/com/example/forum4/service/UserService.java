@@ -26,4 +26,6 @@ public interface UserService {
 
     List<Integer> getLikedCategories(Integer userId);
 
+
+
 }

@@ -31,7 +31,7 @@ public interface UserMapper {
     @Select("SELECT * FROM user")
     List<User> selectAll();
 
-    @Update("UPDATE user SET username = #{username}, password = #{password} WHERE id = #{id}")
+    @Update("UPDATE user SET username = #{username}, password = #{password} ,email =#{email} WHERE id = #{id}")
     void update(User user);
 
     @Delete("DELETE FROM user WHERE id = #{id}")
@@ -49,4 +49,5 @@ public interface UserMapper {
     @Select("SELECT category_id FROM user_category_likes WHERE user_id = #{userId}")
     List<Integer> selectLikedCategoriesByUserId(Integer userId);
 
-}
+
+    }

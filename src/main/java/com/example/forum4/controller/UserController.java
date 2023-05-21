@@ -19,6 +19,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/{id}")
+    public User findById(@PathVariable("id") Integer id){
+        return  userService.findById(id);
+    }
+
     @PostMapping("/create")
     public User create(@RequestBody User user) {
         return userService.create(user);
@@ -38,10 +43,27 @@ public class UserController {
         return new PageImpl<>(users.subList(startIndex, endIndex), PageRequest.of(page, size), total);
     }
 
-    @PutMapping("/update/{id}")
-    public User update(@PathVariable("id") Integer id, @RequestBody User user) {
-        return userService.update(id, user);
-    }
+@PutMapping("/update/{id}")
+public User update(@PathVariable("id") Integer id, @RequestBody User user) {
+  User existingUser = userService.findById(id);
+//  if (existingUser == null) {
+//    throw new NotFoundException("User not found");
+//  }
+
+  if (user.getUsername() != null) {
+    existingUser.setUsername(user.getUsername());
+  }
+
+  if (user.getPassword() != null) {
+    existingUser.setPassword(user.getPassword());
+  }
+
+    if (user.getEmail() != null) {
+    existingUser.setEmail(user.getEmail());
+  }
+
+  return userService.update(id, existingUser);
+}
 
     @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable("id") Integer id) {
