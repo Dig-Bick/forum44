@@ -37,4 +37,7 @@ public interface LikeMapper {
 
     Integer findLikeByUserIdAndPostId(@Param("postId") Integer postId, @Param("userId") Integer userId);
 
+    @Select("SELECT COUNT(*) FROM user_category_likes WHERE category_id = #{categoryId} AND user_id = #{userId}")
+    Integer findLikeByCategoryAndUserId(@Param("categoryId") Integer categoryId, @Param("userId") Integer userId);
+
 }

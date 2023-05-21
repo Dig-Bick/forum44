@@ -146,8 +146,8 @@ public class PostController {
         Optional<Post> optionalPost = postService.findById((long) postId);
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
+            if (!likeService.isCategoryLikedByUser(post.getCategoryId(), userId))
             postService.saveUserLike(userId, Long.valueOf(post.getCategoryId()));
-
             if (likeService.addLike(postId, userId)) {
                 return ResponseEntity.status(HttpStatus.CREATED).body("点赞成功并保存用户类别喜好");
             } else {

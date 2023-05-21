@@ -27,5 +27,11 @@ public class LikeService {
         Integer count = likeMapper.findLikeByUserIdAndPostId(postId, userId);
         return count != null && count > 0;
     }
+
+    public boolean isCategoryLikedByUser(Integer categoryId, Integer userId) {
+        Integer count = likeMapper.findLikeByCategoryAndUserId(categoryId, userId);
+        return count != null && count > 0;
+    }
+
 }
 
